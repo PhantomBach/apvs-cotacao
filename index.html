@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APVS - Cotação</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .form-container {
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px 35px;
+            box-shadow: 0 12px 50px rgba(0,0,0,0.12);
+            width: 100%;
+            max-width: 780px;
+        }
+        .form-container h2 {
+            text-align: center;
+            font-weight: 700;
+            color: #0a2b4e;
+            margin-bottom: 8px;
+        }
+        .form-container h2 span {
+            color: #f5b042;
+        }
+        .form-container .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        .form-container label {
+            font-weight: 600;
+            color: #0a2b4e;
+        }
+        .form-container .form-control,
+        .form-container .form-select {
+            border-radius: 10px;
+            border: 1.5px solid #ddd;
+            padding: 12px 16px;
+            transition: border-color 0.3s;
+        }
+        .form-container .form-control:focus,
+        .form-container .form-select:focus {
+            border-color: #f5b042;
+            box-shadow: 0 0 0 4px rgba(245,176,66,0.25);
+        }
+        .form-container .btn-enviar {
+            background-color: #25d366;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 14px;
+            border-radius: 50px;
+            width: 100%;
+            transition: background 0.3s;
+            border: none;
+        }
+        .form-container .btn-enviar:hover {
+            background-color: #1da851;
+        }
+        .form-container .btn-enviar i {
+            margin-right: 10px;
+        }
+        .form-container .cnpj-img {
+            max-width: 80%;
+            margin: 25px auto 0;
+            display: block;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: #0a2b4e;
+            font-size: 0.9rem;
+        }
+        .loading-spinner i {
+            margin-right: 8px;
+        }
+        .text-muted {
+            font-size: 0.85rem;
+        }
+        @media (max-width: 576px) {
+            .form-container {
+                padding: 25px 18px;
+            }
+            .form-container .cnpj-img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Faça sua <span>cotação</span></h2>
+        <p class="subtitle">Preencha os dados e nossa equipe entrará em contato pelo WhatsApp</p>
+
+        <form id="formWhats" novalidate>
+            <div class="row g-3">
+                <!-- Nome -->
+                <div class="col-12">
+                    <label for="nome" class="form-label">Nome completo *</label>
+                    <input type="text" class="form-control" id="nome" placeholder="Digite seu nome" required />
+                </div>
+                <!-- Telefone -->
+                <div class="col-md-6">
+                    <label for="telefone" class="form-label">Telefone (com DDD) *</label>
+                    <input type="tel" class="form-control" id="telefone" placeholder="(31) 98292-9332" required />
+                </div>
+                <!-- E-mail -->
+                <div class="col-md-6">
+                    <label for="email" class="form-label">E-mail *</label>
+                    <input type="email" class="form-control" id="email" placeholder="seu@email.com" required />
+                </div>
+                <!-- Estado -->
+                <div class="col-md-6">
+                    <label for="estado" class="form-label">Estado *</label>
+                    <input type="text" class="form-control" id="estado" placeholder="Ex: MG" required />
+                </div>
+                <!-- Cidade -->
+                <div class="col-md-6">
+                    <label for="cidade" class="form-label">Cidade *</label>
+                    <input type="text" class="form-control" id="cidade" placeholder="Ex: Belo Horizonte" required />
+                </div>
+                <!-- Placa -->
+                <div class="col-md-6">
+                    <label for="placa" class="form-label">Placa *</label>
+                    <input type="text" class="form-control" id="placa" placeholder="ABC-1234" required />
+                </div>
+                <!-- Tipo do Veículo -->
+                <div class="col-md-6">
+                    <label for="tipo" class="form-label">Tipo do Veículo *</label>
+                    <select class="form-select" id="tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="carros">Carro</option>
+                        <option value="motos">Moto</option>
+                        <option value="caminhoes">Caminhão</option>
+                    </select>
+                </div>
+                <!-- Marca -->
+                <div class="col-md-6">
+                    <label for="marca" class="form-label">Marca *</label>
+                    <select class="form-select" id="marca" required disabled>
+                        <option value="">Selecione o tipo primeiro</option>
+                    </select>
+                </div>
+                <!-- Modelo -->
+                <div class="col-md-6">
+                    <label for="modelo" class="form-label">Modelo *</label>
+                    <select class="form-select" id="modelo" required disabled>
+                        <option value="">Selecione a marca primeiro</option>
+                    </select>
+                </div>
+                <!-- Ano -->
+                <div class="col-md-12">
+                    <label for="ano" class="form-label">Ano do Veículo *</label>
+                    <input type="number" class="form-control" id="ano" placeholder="2024" min="1900" max="2099" required />
+                </div>
+            </div>
+
+            <div id="loadingIndicator" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Carregando dados da FIPE...
+            </div>
+
+            <button type="submit" class="btn-enviar mt-4">
+                <i class="fab fa-whatsapp"></i> Enviar para WhatsApp
+            </button>
+            <p class="text-muted text-center mt-3">
+                Ao clicar, você será redirecionado ao WhatsApp da consultora com todos os dados preenchidos.
+            </p>
+
+            <!-- Imagem do CNPJ -->
+            <img src="imagens/Paola_CNPJ.png" alt="Consultora Paola Emanuele Campos Batista" class="cnpj-img" />
+        </form>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // ================================================================
+        // 1. API FIPE (Marcas e Modelos)
+        // ================================================================
+        const API_BASE = 'https://parallelum.com.br/fipe/api/v1';
+        const selectTipo = document.getElementById('tipo');
+        const selectMarca = document.getElementById('marca');
+        const selectModelo = document.getElementById('modelo');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        function setLoading(visible) {
+            loadingIndicator.style.display = visible ? 'block' : 'none';
+        }
+
+        function setMarcaPlaceholder(msg) {
+            selectMarca.innerHTML = `<option value="">${msg}</option>`;
+            selectMarca.disabled = true;
+            selectModelo.innerHTML = '<option value="">Selecione a marca primeiro</option>';
+            selectModelo.disabled = true;
+        }
+
+        async function carregarMarcas(tipo) {
+            if (!tipo) {
+                setMarcaPlaceholder('Selecione o tipo primeiro');
+                return;
+            }
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE}/${tipo}/marcas`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const marcas = await response.json();
+                selectMarca.innerHTML = '<option value="">Selecione a marca</option>';
+                marcas.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.codigo;
+                    opt.textContent = m.nome;
+                    selectMarca.appendChild(opt);
+                });
+                selectMarca.disabled = false;
+                selectModelo.innerHTML = '<option value="">Selecione a marca primeiro</option>';
+                selectModelo.disabled = true;
+            } catch (error) {
+                console.error('Erro ao carregar marcas:', error);
+                setMarcaPlaceholder('Erro ao carregar. Tente novamente.');
+                alert('Não foi possível carregar as marcas. Verifique sua conexão ou tente novamente mais tarde.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function carregarModelos(tipo, codigoMarca) {
+            if (!tipo || !codigoMarca) {
+                selectModelo.innerHTML = '<option value="">Selecione a marca primeiro</option>';
+                selectModelo.disabled = true;
+                return;
+            }
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE}/${tipo}/marcas/${codigoMarca}/modelos`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                const modelos = data.modelos;
+                selectModelo.innerHTML = '<option value="">Selecione o modelo</option>';
+                modelos.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.codigo;
+                    opt.textContent = m.nome;
+                    selectModelo.appendChild(opt);
+                });
+                selectModelo.disabled = false;
+            } catch (error) {
+                console.error('Erro ao carregar modelos:', error);
+                selectModelo.innerHTML = '<option value="">Erro ao carregar. Tente novamente.</option>';
+                selectModelo.disabled = true;
+                alert('Não foi possível carregar os modelos. Verifique sua conexão ou tente novamente.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        selectTipo.addEventListener('change', function() {
+            carregarMarcas(this.value);
+        });
+        selectMarca.addEventListener('change', function() {
+            carregarModelos(selectTipo.value, this.value);
+        });
+
+        selectMarca.disabled = true;
+        selectModelo.disabled = true;
+
+        // ================================================================
+        // 2. FORMULÁRIO → WHATSAPP
+        // ================================================================
+        document.getElementById('formWhats').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const numero = '5531982929332'; // (31) 98292-9332
+
+            const nome = document.getElementById('nome').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const estado = document.getElementById('estado').value.trim();
+            const cidade = document.getElementById('cidade').value.trim();
+            const placa = document.getElementById('placa').value.trim();
+            const ano = document.getElementById('ano').value.trim();
+
+            const tipoTexto = selectTipo.options[selectTipo.selectedIndex]?.text || '';
+            const marcaTexto = selectMarca.options[selectMarca.selectedIndex]?.text || '';
+            const modeloTexto = selectModelo.options[selectModelo.selectedIndex]?.text || '';
+
+            if (!nome || !telefone || !email || !estado || !cidade || !placa || !ano ||
+                !tipoTexto || !marcaTexto || !modeloTexto) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            const mensagem =
+                `Olá APVS! Gostaria de uma cotação para proteção veicular.
+
+        *Dados do solicitante:*
+        Nome: ${nome}
+        Telefone: ${telefone}
+        E-mail: ${email}
+        Estado: ${estado}
+        Cidade: ${cidade}
+
+        *Dados do veículo:*
+        Placa: ${placa}
+        Tipo: ${tipoTexto}
+        Marca: ${marcaTexto}
+        Modelo: ${modeloTexto}
+        Ano: ${ano}`;
+
+            const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        });
+    </script>
+</body>
+</html>

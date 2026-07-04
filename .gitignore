@@ -1,0 +1,19 @@
+# Imagens locais (adicionar conforme necessário)
+imagens/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (se usar build tools no futuro)
+node_modules/
+package-lock.json
+dist/
+build/
